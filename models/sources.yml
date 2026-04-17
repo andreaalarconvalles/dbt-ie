@@ -3,33 +3,33 @@ version: 2
 sources:
   - name: raw
     database: my_database
-    schema: main  # Schema where the raw tables are located
+    schema: main
     tables:
       - name: categories
-        description: "Raw product categories data"
+        description: "Product categories with hierarchy (parent_category_id)"
       - name: customer_addresses
-        description: "Raw customer addresses data"
+        description: "Shipping and billing addresses for customers"
       - name: customers
-        description: "Raw customer data"
+        description: "Customer data including demographics, geographic info, and segment"
       - name: inventory
-        description: "Raw inventory data"
+        description: "Stock levels by warehouse for each product"
       - name: marketing_campaigns
-        description: "Raw marketing campaigns data"
+        description: "Marketing campaign performance data"
       - name: order_items
-        description: "Raw order items data"
+        description: "Line items for each order with quantity and price"
       - name: orders
-        description: "Raw order data"
+        description: "Order headers with status, totals, and payment info"
       - name: payments
-        description: "Raw payment data"
+        description: "Payment transactions linked to orders"
       - name: products
-        description: "Raw product data"
+        description: "Product catalog with pricing, cost, and supplier info"
       - name: returns
-        description: "Raw returns data"
+        description: "Product returns data with reasons and refund amounts"
       - name: reviews
-        description: "Raw product reviews data"
+        description: "Product reviews by customers"
       - name: shipping
-        description: "Raw shipping data"
+        description: "Shipping details for orders including carrier and tracking"
       - name: suppliers
-        description: "Raw suppliers data"
+        description: "Supplier information including contact details and ratings"
       - name: website_sessions
-        description: "Raw website sessions data"
+        description: "Web traffic data including device, source, and conversion"

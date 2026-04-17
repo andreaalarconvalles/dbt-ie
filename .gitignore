@@ -109,3 +109,6 @@ profiles.yml
 credentials.json
 keys/
 generate_ecommerce_data.py
+
+# Instructor-only docs
+documentation/publishing_strategy.md
