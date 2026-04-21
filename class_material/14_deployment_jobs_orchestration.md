@@ -8,7 +8,7 @@ author:
   - name: Daniel Garcia
   - email: dgarciah@faculty.ie.edu
   - url: www.linkedin.com/in/dgarhdez
-header: '<img src="../img/ie_logo.png" width="90"><span>Analytics Engineering &middot; dgarciah@faculty.ie.edu</span>'
+header: '<img src="../img/ie_logo.png" width="60"><span>Session 14 &mdash; Q&amp;A &amp; Comprehensive Review &middot; <a href="mailto:dgarciah@faculty.ie.edu">dgarciah@faculty.ie.edu</a></span>'
 ---
 
 <!-- _class: lead -->
@@ -45,13 +45,7 @@ Bring your questions from Sessions 1–13:
 
 The full lifecycle in one view:
 
-```
-Sources (raw data)
-  → Staging (clean, 1:1 with source)
-    → Intermediate (joins, logic)
-      → Marts (business-ready: dim_ / mart_)
-        → Exposures (dashboards, reports)
-```
+![center w:1100](../img/diagrams/layers.svg)
 
 Key commands at each stage:
 - `dbt source freshness` → Sources

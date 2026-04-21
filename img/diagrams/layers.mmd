@@ -1,0 +1,16 @@
+%% The canonical dbt layer flow used across the course.
+%% Edit this file, then re-render with: ./render_diagrams.sh
+graph LR
+    S[Sources<br/>raw tables]:::src
+    G[Staging<br/>stg_*]:::stg
+    I[Intermediate<br/>int_*]:::int
+    M[Marts<br/>dim_* / mart_*]:::mart
+    E[Exposures<br/>dashboards / ML]:::exp
+
+    S --> G --> I --> M --> E
+
+    classDef src  fill:#efe9db,stroke:#7a8599,color:#1a1f2e,stroke-width:1px;
+    classDef stg  fill:#e8e2d5,stroke:#153360,color:#153360,stroke-width:1.5px;
+    classDef int  fill:#e8e2d5,stroke:#153360,color:#153360,stroke-width:1.5px;
+    classDef mart fill:#153360,stroke:#153360,color:#ffffff,stroke-width:1.5px;
+    classDef exp  fill:#faf7f2,stroke:#c6893d,color:#c6893d,stroke-width:2px,stroke-dasharray: 4 3;

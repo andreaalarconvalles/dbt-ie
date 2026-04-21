@@ -10,10 +10,7 @@ target/
 dbt_packages/
 logs/
 package-lock.yml
-
-# Ignore dbt profile internals, but KEEP the shared profiles.yml tracked
-.dbt/*
-!.dbt/profiles.yml
+.user.yml
 
 # Python
 __pycache__/
@@ -46,8 +43,10 @@ env/
 dbt_mbads/
 .conda/
 
-# IDEs
-.vscode/
+# IDEs — keep shared workspace settings, ignore user-specific files
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
@@ -113,3 +112,4 @@ generate_ecommerce_data.py
 
 # Instructor-only docs
 documentation/publishing_strategy.md
+documentation/session_*_live_coding.md

@@ -12,21 +12,22 @@
   --ie-accent-lt:  #f2b97a;
   --ie-text:       #1a1f2e;
   --ie-muted:      #7a8599;
-  --ie-rule:       #e5e9f0;
-  --ie-rule-soft:  #ebeef4;
-  --ie-surface:    #f7f8fc;
-  --ie-surface-2:  #f1f4fa;
+  --ie-rule:       #e8e2d5;
+  --ie-rule-soft:  #ede8dc;
+  --ie-surface:    #f5f1e8;
+  --ie-surface-2:  #efe9db;
   --ie-pagination: #b4bcca;
+  --ie-bg:         #faf7f2;
 }
 
-/* Top padding clears the absolute header (top: 22px + logo ~50px + rule ~10px + breathing room). */
+/* Top padding clears the absolute header (top: 20px + logo ~33px + rule ~8px + breathing). */
 section {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   font-size: 26px;
   line-height: 1.55;
   color: var(--ie-text);
-  background: #ffffff;
-  padding: 115px 80px 60px;
+  background: var(--ie-bg);
+  padding: 90px 80px 55px;
   place-content: start;
 }
 
@@ -50,9 +51,9 @@ h1 {
 h2 {
   font-size: 34px;
   line-height: 1.2;
-  padding-bottom: 0.25em;
-  border-bottom: 2px solid var(--ie-rule);
   margin-bottom: 0.7em;
+  /* Pull the title left to align with the logo (section padding-left 80px - 40px = logo edge). */
+  margin-left: -40px;
 }
 
 h3 {
@@ -195,24 +196,32 @@ hr {
 
 section header {
   position: absolute;
-  top: 22px;
+  top: 20px;
   left: 40px;
   right: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--ie-muted);
-  padding: 0 0 10px 0;
+  padding: 0 0 8px 0;
   border-bottom: 1px solid var(--ie-rule-soft);
   background: none;
   margin: 0;
+  letter-spacing: 0.01em;
 }
 
 section header img {
   margin: 0;
   display: block;
 }
+
+section header a {
+  color: var(--ie-accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+section header a:hover { text-decoration: underline; }
 
 section footer {
   color: #9aa3b2;
@@ -221,16 +230,18 @@ section footer {
 }
 
 section::after {
-  font-size: 13px;
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+  font-size: 12px;
   color: var(--ie-pagination);
   padding: 0 30px 18px 0;
   font-weight: 400;
+  letter-spacing: 0.02em;
 }
 
-/* Title slide — use <!-- _class: lead -->. Padding differs (no header to clear). */
+/* Title slide — use <!-- _class: lead -->. Minimal: same cream background, navy text. */
 section.lead {
-  background: linear-gradient(135deg, var(--ie-navy-dark) 0%, #1e4a8a 100%);
-  color: #ffffff;
+  background: var(--ie-bg);
+  color: var(--ie-text);
   padding: 100px 110px;
   justify-content: center;
 }
@@ -238,36 +249,33 @@ section.lead {
 section.lead h1,
 section.lead h2,
 section.lead h3 {
-  color: #ffffff;
   border: none;
   padding: 0;
   margin: 0;
 }
 
 section.lead h1 {
-  font-size: 62px;
+  color: var(--ie-navy);
+  font-size: 58px;
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 0.35em;
+  margin-bottom: 0.4em;
 }
 
 section.lead h2 {
-  font-size: 38px;
+  color: var(--ie-muted);
+  font-size: 32px;
   font-weight: 400;
-  color: #c8d4e8;
   margin-bottom: 0.8em;
 }
-
-section.lead strong        { color: var(--ie-accent-lt); }
-section.lead a             { color: var(--ie-accent-lt); text-decoration-color: var(--ie-accent-lt); }
 
 section.lead h1::after {
   content: '';
   display: block;
-  width: 90px;
-  height: 3px;
+  width: 70px;
+  height: 2px;
   background: var(--ie-accent);
-  margin-top: 0.35em;
+  margin-top: 0.5em;
 }
 
 section.lead header,
@@ -278,7 +286,7 @@ section.lead::after {
 
 /* Chapter divider — use <!-- _class: divider -->. Padding differs (no header to clear). */
 section.divider {
-  background: #f5f7fb;
+  background: var(--ie-surface);
   padding: 100px 110px;
   justify-content: center;
   display: flex;

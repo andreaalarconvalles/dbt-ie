@@ -1,0 +1,29 @@
+%% How DuckDB + dbt + your project code fit together.
+%% Edit this file, then re-render with: ./render_diagrams.sh stack
+graph LR
+    P["data/*.parquet<br/>raw files"]:::input
+    SCR["create_db.py<br/>one-time load"]:::script
+    DB[("my_database.duckdb<br/>DuckDB warehouse")]:::warehouse
+
+    subgraph PRJ ["Your dbt project (git-tracked)"]
+        direction TB
+        PROJ["dbt_project.yml<br/>what this project is"]:::code
+        PROF["profiles.yml<br/>how to connect"]:::code
+        MOD["models/*.sql<br/>your transformations"]:::code
+        YML["models/*.yml<br/>sources, tests, docs"]:::code
+        PKG["packages.yml<br/>external dbt packages"]:::code
+    end
+
+    CLI["dbt CLI<br/>run / build / test"]:::engine
+
+    P --> SCR --> DB
+    CLI --> PRJ
+    PRJ -.->|compile &amp; execute| DB
+
+    classDef input     fill:#efe9db,stroke:#7a8599,color:#1a1f2e,stroke-width:1px;
+    classDef script    fill:#e8e2d5,stroke:#7a8599,color:#1a1f2e,stroke-width:1px,stroke-dasharray: 3 3;
+    classDef code      fill:#e8e2d5,stroke:#153360,color:#153360,stroke-width:1.5px;
+    classDef engine    fill:#153360,stroke:#153360,color:#ffffff,stroke-width:1.5px;
+    classDef warehouse fill:#faf7f2,stroke:#c6893d,color:#c6893d,stroke-width:2.5px;
+
+    style PRJ fill:#faf7f2,stroke:#7a8599,color:#1a1f2e,stroke-dasharray: 4 3;

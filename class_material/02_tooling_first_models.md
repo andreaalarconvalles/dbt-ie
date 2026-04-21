@@ -8,7 +8,7 @@ author:
   - name: Daniel Garcia
   - email: dgarciah@faculty.ie.edu
   - url: www.linkedin.com/in/dgarhdez
-header: '<img src="../img/ie_logo.png" width="90"><span>Analytics Engineering &middot; dgarciah@faculty.ie.edu</span>'
+header: '<img src="../img/ie_logo.png" width="60"><span>Session 2 &mdash; Setting Up dbt &amp; First Models &middot; <a href="mailto:dgarciah@faculty.ie.edu">dgarciah@faculty.ie.edu</a></span>'
 ---
 
 <!-- _class: lead -->
@@ -49,25 +49,16 @@ In this course, **DuckDB acts as our Data Warehouse**, running locally on your m
 
 ## Setting up the Environment
 
-We use **`uv`** as the Python package manager — fast, modern, and reproducible.
+We use **`uv`** as the Python package manager — fast and reproducible.
 
-1. **Sync dependencies** (reads `pyproject.toml`, creates `.venv/`, writes `uv.lock`):
-   ```bash
-   uv sync
-   ```
+```bash
+uv sync                           # install deps, create .venv/
+source .venv/bin/activate         # macOS / Linux
+.\.venv\Scripts\Activate.ps1      # Windows PowerShell
+dbt deps                          # install dbt packages
+```
 
-2. **Activate the virtual environment**:
-   ```bash
-   source .venv/bin/activate        # macOS / Linux
-   .\.venv\Scripts\Activate.ps1     # Windows PowerShell
-   ```
-
-3. **Install dbt packages** (from `packages.yml`):
-   ```bash
-   dbt deps
-   ```
-
-*Tip: you can skip activation and prefix any command with `uv run`, e.g. `uv run dbt debug`.*
+*Tip: skip activation and prefix with `uv run`, e.g. `uv run dbt debug`.*
 
 ---
 
@@ -90,22 +81,37 @@ If everything is green, you are ready to build.
 
 ---
 
+## How dbt Finds Your Profile
+
+dbt looks for `profiles.yml` — **first match wins**:
+
+1. `--profiles-dir /path` (CLI flag)
+2. `DBT_PROFILES_DIR` env var
+3. **The project directory** (next to `dbt_project.yml`) ← *this repo*
+4. `~/.dbt/profiles.yml` (global default)
+
+```yaml
+# profiles.yml — ships at the repo root
+default:
+  target: dev
+  outputs:
+    dev: {type: duckdb, path: my_database.duckdb, schema: main}
+```
+
+*`dbt debug` prints the exact path it loaded — check that first if anything looks off. We skip `dbt init` because the repo already ships everything you need.*
+
+---
+
 ## Git Workflow: Forking & Cloning
 
-All your work lives inside **your own fork**. Nothing gets pushed back to the instructor's repo.
+All your work lives inside **your own fork** — nothing is pushed to the instructor's repo.
 
-1. **Fork** `dgarhdez/dbt-ie` on GitHub — this creates `YOUR_USERNAME/dbt-ie`, which you own and can push to.
-2. **Clone your fork** locally:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/dbt-ie.git
-   ```
-3. **Branch** for each piece of work:
-   ```bash
-   git checkout -b feature/my-first-model
-   ```
-4. **Commit, push, and open a PR** *inside your fork* (feature branch → your own `main`). Merge it yourself.
+1. **Fork** `dgarhdez/dbt-ie` on GitHub → `YOUR_USERNAME/dbt-ie`.
+2. **Clone**: `git clone https://github.com/YOUR_USERNAME/dbt-ie.git`
+3. **Branch**: `git checkout -b feature/my-first-model`
+4. **Commit, push, open a PR** (feature branch → your own `main`) and merge it yourself.
 
-*Same PR-based workflow used in industry — just scoped to your fork.*
+*Same PR workflow as industry — just scoped to your fork.*
 
 ---
 
@@ -143,22 +149,18 @@ Every dbt project is defined by **`dbt_project.yml`** at the repo root.
 
 ```yaml
 name: 'dbt_ie'
-version: '1.0.0'
-profile: 'default'          # which profile from profiles.yml to use
+profile: 'default'          # profile from profiles.yml
 
-model-paths:    ["models"]
-seed-paths:     ["seeds"]
-macro-paths:    ["macros"]
-snapshot-paths: ["snapshots"]
-test-paths:     ["tests"]
+model-paths: ["models"]
+seed-paths:  ["seeds"]
 
 models:
   dbt_ie:
     staging:
-      materialized: view    # default materialization for models/staging/
+      materialized: view    # default for models/staging/
 ```
 
-The `models:` section lets you configure defaults **by folder**, cascading down.
+The `models:` section configures defaults **by folder**, cascading down.
 
 ---
 
@@ -185,47 +187,34 @@ dbt-ie/
 
 ## Building Your First Model
 
-A **dbt model** is a `SELECT` statement saved as a `.sql` file under `models/`.
+A **dbt model** is a `SELECT` saved as a `.sql` file under `models/`.
 
 ```sql
 -- models/staging/stg_customers.sql
-select
-    customer_id,
-    first_name,
-    last_name,
-    email,
-    country
+select customer_id, first_name, last_name, email, country
 from main.customers
 ```
 
-Build it:
-```bash
-dbt run -s stg_customers
-```
+Build it: `dbt run -s stg_customers`
 
-*We read directly from `main.customers` for now. Next session we will wrap raw tables with `source()` for proper lineage.*
+*We read directly from `main.customers` for now — next session we wrap raw tables with `source()`.*
 
 ---
 
 ## The `ref()` Macro & Modularity
 
-`ref()` is how models reference each other — it is the core of dbt's **DAG**.
+`ref()` is how models reference each other — the core of dbt's **DAG**.
 
 ```sql
 -- models/intermediate/int_customer_orders.sql
-select
-    c.customer_id,
-    c.first_name,
-    count(o.order_id) as n_orders
+select c.customer_id, c.first_name, count(o.order_id) as n_orders
 from {{ ref('stg_customers') }} as c
-left join {{ ref('stg_orders') }}    as o
-    on c.customer_id = o.customer_id
+left join {{ ref('stg_orders') }} as o on c.customer_id = o.customer_id
 group by 1, 2
 ```
 
-- dbt resolves `ref()` to the correct schema/table **at compile time**.
-- It builds a **Directed Acyclic Graph** of all models.
-- It determines the correct **execution order** automatically.
+- Resolves to the correct schema/table **at compile time**.
+- Builds a **Directed Acyclic Graph** and the correct execution order.
 
 ---
 
@@ -254,33 +243,30 @@ from {{ ref('stg_customers') }}
 
 | Command | Purpose |
 | :--- | :--- |
-| `dbt debug` | Verify connection and project configuration |
+| `dbt debug` | Verify connection and project config |
 | `dbt deps` | Install packages from `packages.yml` |
 | `dbt compile` | Compile Jinja → SQL, no execution |
 | `dbt run` | Execute all models |
-| `dbt run -s model_name` | Build a single model |
 | `dbt run -s +mart_orders` | Build `mart_orders` and everything upstream |
 | `dbt build` | `run` + `test` + `seed` + `snapshot` in DAG order |
 
-*Selectors (`-s`) support `+` for dependencies, `@` for full family, `tag:`, `path:`, and more — we will build on these throughout the course.*
+*Selectors (`-s`) support `+`, `@`, `tag:`, `path:`, and more.*
 
 ---
 
 ## Compiled vs Run SQL
 
-After `dbt compile` or `dbt run`, dbt writes two kinds of output under `target/`:
+After `dbt compile` or `dbt run`, dbt writes two outputs under `target/`:
 
-- **`target/compiled/`** — the SQL **after Jinja rendering**, before execution.
-  *Exactly what dbt would send to the warehouse.*
-- **`target/run/`** — the SQL **wrapped in the materialization DDL** (e.g. `create table as ...`).
-  *The full statement dbt actually executed.*
+- **`target/compiled/`** — SQL **after Jinja rendering**, before execution. *What dbt would send to the warehouse.*
+- **`target/run/`** — SQL **wrapped in materialization DDL** (e.g. `create table as ...`). *What dbt actually executed.*
 
 ```bash
 target/compiled/dbt_ie/models/staging/stg_customers.sql   # pure SELECT
 target/run/dbt_ie/models/staging/stg_customers.sql        # CREATE VIEW ... AS SELECT
 ```
 
-**Always check compiled SQL when debugging** — it is the ground truth of what your Jinja produced.
+**Always check compiled SQL when debugging** — it is the ground truth.
 
 ---
 

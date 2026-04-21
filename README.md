@@ -145,17 +145,19 @@ Once activated, you should see `(dbt-ie)` at the beginning of your terminal prom
 
 ### 4. Configure dbt
 
-Ensure you have a `profiles.yml` file in the `.dbt` directory. This file should contain your dbt configurations for DuckDB. Example:
+The repo ships with a `profiles.yml` at the project root — dbt picks it up automatically when you run commands from the project directory (no `DBT_PROFILES_DIR` needed). It looks like this:
 
 ```yaml
 default:
+  target: dev
   outputs:
     dev:
       type: duckdb
       path: my_database.duckdb
       schema: main
-  target: dev
 ```
+
+> **Note:** If you have a global `~/.dbt/profiles.yml`, the project's `profiles.yml` takes precedence as long as you run `dbt` from inside the project folder. Run `dbt debug` to confirm: it should print `Using profiles.yml file at .../dbt-ie/profiles.yml`.
 
 ### 5. Load Data into DuckDB
 
