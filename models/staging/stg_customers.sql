@@ -5,4 +5,4 @@ select
     email,
     country,
     customer_segment
-from {{ source("raw", "customers") }}
+from {{ source('raw', 'customers') }}
