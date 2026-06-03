@@ -6,14 +6,14 @@ with customers as (
         email,
         country,
         customer_segment
-    from {{ ref("stg_customers") }}
+    from {{ ref('stg_customers') }}
 ),
 
 customer_segments as (
     select
         segment_id,
         customer_segment
-    from {{ ref("segments") }}
+    from {{ ref('segments') }}
 ),
 
 merged as (
